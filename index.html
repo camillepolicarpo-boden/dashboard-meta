@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta do Mês — Gestão à Vista</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Archivo+Narrow:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12151a;
+    --panel:#1a1f28;
+    --panel-2:#212836;
+    --line:#2c3442;
+    --ink:#eef2f7;
+    --ink-dim:#9aa6b6;
+    --ink-faint:#5f6b7c;
+    --green:#3ecf8e;
+    --green-dim:#1f6b4a;
+    --amber:#f2b544;
+    --red:#f26d6d;
+    --red2:#f05a5a;
+    --blue:#5b9df9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Archivo',system-ui,sans-serif;
+    line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+    padding:28px clamp(16px,4vw,48px) 60px;
+  }
+  .wrap{max-width:1240px;margin:0 auto}
+
+  /* Header */
+  header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:26px}
+  .eyebrow{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
+  h1{font-family:'Archivo Narrow',sans-serif;font-weight:800;font-size:clamp(28px,4.5vw,44px);letter-spacing:-.01em;text-transform:uppercase}
+  .ref{text-align:right}
+  .ref .day{font-family:'Archivo Narrow';font-weight:800;font-size:clamp(22px,3vw,30px)}
+  .ref .sub{font-family:'Space Mono',monospace;font-size:12px;color:var(--ink-dim)}
+
+  /* Status banner */
+  .status{display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,rgba(242,90,90,.14),rgba(242,90,90,.02));border:1px solid rgba(242,90,90,.35);border-left:4px solid var(--red2);border-radius:10px;padding:16px 20px;margin-bottom:26px}
+  .status .dot{width:12px;height:12px;border-radius:50%;background:var(--red2);box-shadow:0 0 0 5px rgba(240,90,90,.18);flex:none}
+  .status .txt strong{font-weight:800}
+  .status .txt{font-size:15px;color:var(--ink)}
+  .status .txt span{color:var(--ink-dim)}
+
+  /* Grid */
+  .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+  .card h2{font-family:'Archivo Narrow';font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+  .card h2::before{content:"";width:6px;height:6px;border-radius:1px;background:var(--green);display:inline-block}
+
+  /* Big gauge */
+  .gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .gauge{position:relative;width:100%;max-width:340px}
+  .gauge svg{width:100%;height:auto;overflow:visible}
+  .gauge-center{position:absolute;top:58%;left:50%;transform:translate(-50%,-50%);text-align:center;width:100%}
+  .gauge-pct{font-family:'Archivo Narrow';font-weight:800;font-size:clamp(40px,8vw,58px);line-height:1;letter-spacing:-.02em}
+  .gauge-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin-top:6px}
+  .gauge-vals{display:flex;justify-content:center;gap:26px;margin-top:14px;flex-wrap:wrap}
+  .gv{text-align:center}
+  .gv .n{font-family:'Archivo Narrow';font-weight:800;font-size:19px}
+  .gv .l{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-top:2px}
+
+  /* Daily target block */
+  .daily{background:linear-gradient(160deg,var(--panel-2),var(--panel));border-color:var(--line)}
+  .daily h2::before{background:var(--amber)}
+  .big-daily{font-family:'Archivo Narrow';font-weight:900;font-size:clamp(42px,7vw,60px);line-height:.95;letter-spacing:-.02em;color:var(--amber)}
+  .big-daily small{font-size:.42em;color:var(--ink-dim);font-weight:700;vertical-align:.35em}
+  .daily-sub{font-size:13px;color:var(--ink-dim);margin-top:8px;margin-bottom:20px}
+  .daily-sub b{color:var(--ink)}
+  .compare{display:flex;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:4px}
+  .compare div{flex:1;padding:12px 14px;text-align:center}
+  .compare div:first-child{border-right:1px solid var(--line);background:rgba(255,255,255,.015)}
+  .compare .cn{font-family:'Archivo Narrow';font-weight:800;font-size:20px}
+  .compare .cl{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-top:3px}
+  .compare .old{color:var(--ink-dim)}
+
+  /* Pace bar (signature) */
+  .pace{margin-top:8px}
+  .pace-track{position:relative;height:64px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .pace-fill{position:absolute;top:0;left:0;bottom:0;background:linear-gradient(90deg,rgba(62,207,142,.35),rgba(62,207,142,.75));border-right:2px solid var(--green);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+  .pace-should{position:absolute;top:-6px;bottom:-6px;width:3px;background:var(--ink);box-shadow:0 0 0 3px rgba(18,21,26,.6)}
+  .pace-should::after{content:attr(data-lbl);position:absolute;top:-22px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.05em;color:var(--ink);background:var(--bg);padding:1px 6px;border-radius:4px;border:1px solid var(--line)}
+  .pace-labels{display:flex;justify-content:space-between;margin-top:10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-faint)}
+  .pace-inside{position:absolute;top:50%;left:14px;transform:translateY(-50%);font-family:'Archivo Narrow';font-weight:800;font-size:16px;color:#0c130f;z-index:2}
+
+  /* Composition rows */
+  .comp-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .comp-row:last-child{border-bottom:none}
+  .comp-icon{width:38px;height:38px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;font-family:'Archivo Narrow';font-weight:800;font-size:15px}
+  .comp-meta{flex:1;min-width:0}
+  .comp-name{font-weight:700;font-size:14px}
+  .comp-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+  .comp-val{font-family:'Archivo Narrow';font-weight:800;font-size:18px;text-align:right;white-space:nowrap}
+  .tag-prev{color:var(--green)}
+  .tag-avulso{color:var(--amber)}
+
+  /* Weeks */
+  .weeks{grid-column:1/-1}
+  .weeks h2::before{background:var(--blue)}
+  .wk-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  @media(max-width:760px){.wk-grid{grid-template-columns:repeat(2,1fr)}}
+  .wk{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:16px 14px;position:relative;overflow:hidden}
+  .wk .wk-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .wk-num{font-family:'Archivo Narrow';font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
+  .wk-badge{font-family:'Space Mono',monospace;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:700}
+  .b-done{background:rgba(62,207,142,.14);color:var(--green)}
+  .b-under{background:rgba(240,90,90,.14);color:var(--red2)}
+  .b-now{background:rgba(91,157,249,.16);color:var(--blue)}
+  .b-open{background:rgba(255,255,255,.05);color:var(--ink-faint)}
+  .wk-real{font-family:'Archivo Narrow';font-weight:800;font-size:22px;line-height:1}
+  .wk-of{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-faint);margin-top:4px}
+  .wk-bar{height:6px;background:#0e1218;border-radius:4px;margin-top:12px;overflow:hidden}
+  .wk-bar span{display:block;height:100%;border-radius:4px}
+
+  footer{margin-top:30px;padding-top:18px;border-top:1px solid var(--line);font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+  .mono{font-family:'Space Mono',monospace}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">Gestão à vista · Meta comercial</div>
+      <h1>Meta do Mês — Julho / 2026</h1>
+    </div>
+    <div class="ref">
+      <div class="day">Segunda, 13/07</div>
+      <div class="sub">9 de 23 dias úteis decorridos</div>
+    </div>
+  </header>
+
+  <div class="status">
+    <div class="dot"></div>
+    <div class="txt">
+      <strong>Abaixo do ritmo necessário.</strong>
+      <span>No pace linear, o esperado até hoje seria ~R$&nbsp;36,1&nbsp;mil no avulso. Estamos em R$&nbsp;18,5&nbsp;mil — atraso de ~R$&nbsp;17,6&nbsp;mil a recuperar.</span>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <!-- GAUGE -->
+    <div class="card">
+      <h2>Faturamento total do mês</h2>
+      <div class="gauge-wrap">
+        <div class="gauge">
+          <svg viewBox="0 0 220 130">
+            <path d="M15 120 A95 95 0 0 1 205 120" fill="none" stroke="#252c38" stroke-width="18" stroke-linecap="round"/>
+            <path id="arc" d="M15 120 A95 95 0 0 1 205 120" fill="none" stroke="url(#g)" stroke-width="18" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#f2b544"/>
+                <stop offset="1" stop-color="#3ecf8e"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="gauge-center">
+            <div class="gauge-pct">26<small style="font-size:.5em">%</small></div>
+            <div class="gauge-label">da meta de R$ 100 mil</div>
+          </div>
+        </div>
+        <div class="gauge-vals">
+          <div class="gv"><div class="n">R$ 26.343</div><div class="l">Realizado + previsto</div></div>
+          <div class="gv"><div class="n" style="color:var(--red2)">R$ 73.657</div><div class="l">Falta bater</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAILY TARGET -->
+    <div class="card daily">
+      <h2>Meta diária de recuperação</h2>
+      <div class="big-daily">R$ 4.910<small>/dia útil</small></div>
+      <div class="daily-sub">Para bater a meta, é o que o <b>avulso</b> precisa faturar por dia nos <b>15 dias úteis restantes</b> (incluindo hoje). Recalculado com o atraso das semanas 1 e 2.</div>
+      <div class="compare">
+        <div>
+          <div class="cn old">R$ 4.007</div>
+          <div class="cl">Meta diária original</div>
+        </div>
+        <div>
+          <div class="cn" style="color:var(--amber)">R$ 4.910</div>
+          <div class="cl">Ajustada (recuperação)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PACE (signature) -->
+    <div class="card" style="grid-column:1/-1">
+      <h2>Ritmo do avulso — onde estamos vs onde deveríamos estar</h2>
+      <div class="pace">
+        <div class="pace-track">
+          <div class="pace-fill" style="width:20.1%">
+            <div class="pace-inside">R$ 18,5 mil</div>
+          </div>
+          <div class="pace-should" style="left:39.2%" data-lbl="Deveria estar hoje · R$ 36,1 mil"></div>
+        </div>
+        <div class="pace-labels">
+          <span>R$ 0</span>
+          <span>Meta avulso do mês · R$ 92.157</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPOSITION -->
+    <div class="card" style="grid-column:1/-1">
+      <h2>Composição da meta — as 3 frentes que contam</h2>
+
+      <div class="comp-row">
+        <div class="comp-icon" style="background:rgba(62,207,142,.14);color:var(--green)">F1</div>
+        <div class="comp-meta">
+          <div class="comp-name">Fixo — Assinaturas B2C</div>
+          <div class="comp-tag tag-prev">Previsibilidade · entra cheio no início do mês</div>
+        </div>
+        <div class="comp-val" style="color:var(--green)">R$ 5.671,82</div>
+      </div>
+
+      <div class="comp-row">
+        <div class="comp-icon" style="background:rgba(62,207,142,.14);color:var(--green)">F2</div>
+        <div class="comp-meta">
+          <div class="comp-name">Fixo — Abastecimentos de empresas</div>
+          <div class="comp-tag tag-prev">Previsibilidade · recorrência mensal</div>
+        </div>
+        <div class="comp-val" style="color:var(--green)">R$ 2.171,27</div>
+      </div>
+
+      <div class="comp-row">
+        <div class="comp-icon" style="background:rgba(242,181,68,.14);color:var(--amber)">F3</div>
+        <div class="comp-meta">
+          <div class="comp-name">B2B Avulso / Personalizado <span class="mono" style="font-size:11px;color:var(--ink-faint)">(1.1.62)</span></div>
+          <div class="comp-tag tag-avulso">Sem previsibilidade · é aqui que se bate a meta</div>
+        </div>
+        <div class="comp-val" style="color:var(--amber)">R$ 18.499,62</div>
+      </div>
+
+      <div class="comp-row" style="border-top:1px solid var(--line);margin-top:6px;padding-top:16px">
+        <div class="comp-icon" style="background:rgba(255,255,255,.05);color:var(--ink)">Σ</div>
+        <div class="comp-meta">
+          <div class="comp-name">Total realizado + previsto</div>
+          <div class="comp-tag">Meta do mês: R$ 100.000,00</div>
+        </div>
+        <div class="comp-val">R$ 26.342,71</div>
+      </div>
+    </div>
+
+    <!-- WEEKS -->
+    <div class="card weeks">
+      <h2>Acompanhamento semanal — avulso realizado vs meta linear</h2>
+      <div class="wk-grid">
+
+        <div class="wk">
+          <div class="wk-head"><span class="wk-num">Sem 1<br>01–05</span><span class="wk-badge b-under">−73%</span></div>
+          <div class="wk-real">R$ 3.138</div>
+          <div class="wk-of">de R$ 12.020</div>
+          <div class="wk-bar"><span style="width:26%;background:var(--red2)"></span></div>
+        </div>
+
+        <div class="wk">
+          <div class="wk-head"><span class="wk-num">Sem 2<br>06–12</span><span class="wk-badge b-under">−23%</span></div>
+          <div class="wk-real">R$ 15.362</div>
+          <div class="wk-of">de R$ 20.034</div>
+          <div class="wk-bar"><span style="width:77%;background:var(--amber)"></span></div>
+        </div>
+
+        <div class="wk">
+          <div class="wk-head"><span class="wk-num">Sem 3<br>13–19</span><span class="wk-badge b-now">Atual</span></div>
+          <div class="wk-real">R$ 0</div>
+          <div class="wk-of">meta R$ 20.034</div>
+          <div class="wk-bar"><span style="width:0%;background:var(--blue)"></span></div>
+        </div>
+
+        <div class="wk">
+          <div class="wk-head"><span class="wk-num">Sem 4<br>20–26</span><span class="wk-badge b-open">Aberta</span></div>
+          <div class="wk-real">R$ 0</div>
+          <div class="wk-of">meta R$ 20.034</div>
+          <div class="wk-bar"><span style="width:0%;background:var(--ink-faint)"></span></div>
+        </div>
+
+        <div class="wk">
+          <div class="wk-head"><span class="wk-num">Sem 5<br>27–31</span><span class="wk-badge b-open">Aberta</span></div>
+          <div class="wk-real">R$ 0</div>
+          <div class="wk-of">meta R$ 20.034</div>
+          <div class="wk-bar"><span style="width:0%;background:var(--ink-faint)"></span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>Base: pivot faturamento · valores líquidos · categoria 1.1.62 (B2B Avulsa) = frente da meta</span>
+    <span>Dias úteis (seg–sex) · Fixo previsto lançado cheio no início do mês</span>
+  </footer>
+
+</div>
+
+<script>
+  // anima o arco do gauge conforme %
+  const pct = 26.3;
+  const arc = document.getElementById('arc');
+  const len = arc.getTotalLength();
+  arc.style.strokeDasharray = len;
+  arc.style.strokeDashoffset = len;
+  requestAnimationFrame(()=>{
+    arc.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)';
+    arc.style.strokeDashoffset = len * (1 - pct/100);
+  });
+</script>
+</body>
+</html>
